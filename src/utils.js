@@ -53,20 +53,19 @@ async function sendMail(mailInfo) {
 
 function parseResponse(response) {
   const content = response.content;
-  const currentCounty = counties[content[0].countyID - 1];
   let ownMessage = "";
+
+  const currentCounty = counties.find(
+    (element) => element.id === content[0].countyID
+  );
 
   content.forEach((item) => {
     log_file.write(
-      `Checking availability for ${item.address} in ${
-        currentCounty ? currentCounty.name : "COUNTY"
-      }\n`
+      `Checking availability for ${item.address} in ${currentCounty.name}\n`
     );
 
     if (item.boosterID < 3) {
       if (
-        item &&
-        currentCounty &&
         currentCounty.search === "all" &&
         item.usesWaitingList &&
         item.waitingListSize < 20
@@ -87,7 +86,7 @@ function parseResponse(response) {
         );
       }
 
-      if (item && item.availableSlots) {
+      if (item.availableSlots) {
         console.log(
           `Found ${item.availableSlots} places available list for ${currentCounty.name}`
         );
