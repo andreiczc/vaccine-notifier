@@ -57,6 +57,12 @@ function parseResponse(response) {
   let ownMessage = "";
 
   content.forEach((item) => {
+    log_file.write(
+      `Checking availability for ${item.address} in ${
+        currentCounty ? currentCounty.name : "COUNTY"
+      }\n`
+    );
+
     if (item.boosterID < 3) {
       if (
         item &&
