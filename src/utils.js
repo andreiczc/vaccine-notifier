@@ -112,8 +112,10 @@ function parseResponse(response) {
 }
 
 async function performRequest(countyIdValue, pageNo) {
+  let currentCounty = counties.find((element) => element.id === countyIdValue);
+
   log_file.write(
-    `Performing a request for ${counties[countyIdValue]} with page number ${pageNo}\n`
+    `Performing a request for ${currentCounty.name} with page number ${pageNo}\n`
   );
 
   const result = await axios({
