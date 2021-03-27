@@ -1,13 +1,11 @@
-const counties = require("../etc/counties.json");
-
-const fs = require("fs");
-let log_file = fs.createWriteStream(__dirname + "/debug.log", { flags: "w" });
-
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 
 const credentials = require("../etc/credentials.json");
 let mailInfo = require("../etc/mailInfo.json");
+const counties = require("../etc/counties.json");
+
+let { logMessage } = require("./logger.js");
 
 const boosters = ["Pfizer", "Moderna", "Astra Zeneca"];
 
@@ -15,7 +13,11 @@ let transporter = nodemailer.createTransport(credentials);
 
 transporter.verify((err, success) => {
   if (err) {
-    console.log(`Error ocurred while logging in. Error ${err}`);
+    logMessage(
+      "ERROR",
+      `Error ocurred while logging in. Message: ${err}`,
+      true
+    );
   }
 });
 
@@ -26,10 +28,12 @@ function createMailInfoText(
   noWaiting,
   boosterType
 ) {
-  log_file.write(
+  logMessage(
+    "INFO",
     `Creating mail info for ${address} with vaccine ${
       boosters[boosterType - 1]
-    }\n`
+    }`,
+    true
   );
 
   return `Localitate: ${county}\nAdresa: ${address}\nVaccin: ${
@@ -40,13 +44,11 @@ function createMailInfoText(
 async function sendMail(mailInfo) {
   let info = await transporter.sendMail(mailInfo, (err, info) => {
     if (err) {
-      console.log(`Error sending message. ${err}`);
-      log_file.write(`Error sending message. ${err}\n`);
+      logMessage("ERROR", `Error sending message. ${err}`, true);
     }
   });
 
-  console.log(`Mail sent`);
-  log_file.write(`Mail has been sent\n`);
+  logMessage("INFO", "Mail sent", true);
 
   return info;
 }
@@ -60,8 +62,9 @@ function parseResponse(response) {
   );
 
   content.forEach((item) => {
-    log_file.write(
-      `Checking availability for ${item.address} in ${currentCounty.name}\n`
+    logMessage(
+      "INFO",
+      `Checking availability for ${item.address} in ${currentCounty.name}`
     );
 
     if (item.boosterID < 3) {
@@ -70,11 +73,10 @@ function parseResponse(response) {
         item.usesWaitingList &&
         item.waitingListSize < 20
       ) {
-        console.log(
-          `Found ${item.waitingListSize} places on the waiting list for ${currentCounty.name} in ${item.address}`
-        );
-        log_file.write(
-          `Found ${item.waitingListSize} places on the waiting list for ${currentCounty.name} in ${item.address}\n`
+        logMessage(
+          "INFO",
+          `Found ${item.waitingListSize} places on the waiting list for ${currentCounty.name} in ${item.address}`,
+          true
         );
 
         ownMessage += createMailInfoText(
@@ -87,11 +89,10 @@ function parseResponse(response) {
       }
 
       if (item.availableSlots) {
-        console.log(
-          `Found ${item.availableSlots} places available list for ${currentCounty.name}`
-        );
-        log_file.write(
-          `Found ${item.availableSlots} places available for ${currentCounty.name}\n`
+        logMessage(
+          "INFO",
+          `Found ${item.availableSlots} places available list for ${currentCounty.name}`,
+          true
         );
 
         ownMessage += createMailInfoText(
@@ -106,8 +107,7 @@ function parseResponse(response) {
   });
 
   if (ownMessage !== "") {
-    console.log(`Sending a mail`);
-    log_file.write("Sending a mail\n");
+    logMessage("INFO", "Sending a mail");
     mailInfo.text = ownMessage;
     mailInfo.subject = `Raport locuri vaccinare pentru ${currentCounty.name}`;
     sendMail(mailInfo);
@@ -119,8 +119,9 @@ function parseResponse(response) {
 async function performRequest(countyIdValue, pageNo) {
   let currentCounty = counties.find((element) => element.id === countyIdValue);
 
-  log_file.write(
-    `Performing a request for ${currentCounty.name} with page number ${pageNo}\n`
+  logMessage(
+    "INFO",
+    `Performing a request for ${currentCounty.name} with page number ${pageNo}`
   );
 
   const result = await axios({
@@ -130,7 +131,7 @@ async function performRequest(countyIdValue, pageNo) {
       page: pageNo,
     },
     headers: {
-      Cookie: "SESSION=MzY3N2NlOGEtYjFjZC00YjUwLTk1MjMtMDFhNDE2OGRiMzUy",
+      Cookie: "SESSION=NzY5ZDE4ZTItNjA1My00YTIxLWE5NjItMzYyZGM5YTFiNjFm",
       "sec-ch-ua": `"Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"`,
       Accept: `application/json, text/plain, */*`,
       DNT: 1,
