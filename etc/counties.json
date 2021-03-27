@@ -1,0 +1,207 @@
+[
+  {
+    "id": 1,
+    "name": "Alba",
+    "search": "none"
+  },
+  {
+    "id": 2,
+    "name": "Arad",
+    "search": "none"
+  },
+  {
+    "id": 3,
+    "name": "Arges",
+    "search": "available"
+  },
+  {
+    "id": 4,
+    "name": "Bacau",
+    "search": "available"
+  },
+  {
+    "id": 5,
+    "name": "Bihor",
+    "search": "none"
+  },
+  {
+    "id": 6,
+    "name": "Bistrita-Nasaud",
+    "search": "none"
+  },
+  {
+    "id": 7,
+    "name": "Botosani",
+    "search": "none"
+  },
+  {
+    "id": 8,
+    "name": "Brasov",
+    "search": "available"
+  },
+  {
+    "id": 9,
+    "name": "Braila",
+    "search": "available"
+  },
+  {
+    "id": 10,
+    "name": "Buzau",
+    "search": "available"
+  },
+  {
+    "id": 11,
+    "name": "Caras-Severin",
+    "search": "none"
+  },
+  {
+    "id": 12,
+    "name": "Cluj",
+    "search": "none"
+  },
+  {
+    "id": 13,
+    "name": "Constanta",
+    "search": "available"
+  },
+  {
+    "id": 14,
+    "name": "Covasna",
+    "search": "none"
+  },
+  {
+    "id": 15,
+    "name": "Dimbovita",
+    "search": "available"
+  },
+  {
+    "id": 16,
+    "name": "Dolj",
+    "search": "available"
+  },
+  {
+    "id": 17,
+    "name": "Galati",
+    "search": "available"
+  },
+  {
+    "id": 18,
+    "name": "Gorj",
+    "search": "none"
+  },
+  {
+    "id": 19,
+    "name": "Harghita",
+    "search": "none"
+  },
+  {
+    "id": 20,
+    "name": "Hunedoara",
+    "search": "none"
+  },
+  {
+    "id": 21,
+    "name": "Ialomita",
+    "search": "available"
+  },
+  {
+    "id": 22,
+    "name": "Iasi",
+    "search": "none"
+  },
+  {
+    "id": 24,
+    "name": "Maramures",
+    "search": "none"
+  },
+  {
+    "id": 25,
+    "name": "Mehedinti",
+    "search": "none"
+  },
+  {
+    "id": 27,
+    "name": "Neamt",
+    "search": "none"
+  },
+  {
+    "id": 28,
+    "name": "Olt",
+    "search": "available"
+  },
+  {
+    "id": 29,
+    "name": "Prahova",
+    "search": "available"
+  },
+  {
+    "id": 30,
+    "name": "Satu mare",
+    "search": "none"
+  },
+  {
+    "id": 31,
+    "name": "Salaj",
+    "search": "none"
+  },
+  {
+    "id": 32,
+    "name": "Sibiu",
+    "search": "available"
+  },
+  {
+    "id": 33,
+    "name": "Succeava",
+    "search": "none"
+  },
+  {
+    "id": 34,
+    "name": "Teleorman",
+    "search": "available"
+  },
+  {
+    "id": 35,
+    "name": "Timis",
+    "search": "none"
+  },
+  {
+    "id": 36,
+    "name": "Tulcea",
+    "search": "available"
+  },
+  {
+    "id": 37,
+    "name": "Vaslui",
+    "search": "none"
+  },
+  {
+    "id": 38,
+    "name": "Valcea",
+    "search": "available"
+  },
+  {
+    "id": 39,
+    "name": "Vrancea",
+    "search": "available"
+  },
+  {
+    "id": 40,
+    "name": "Bucuresti",
+    "search": "all"
+  },
+  {
+    "id": 51,
+    "name": "Calarasi",
+    "search": "available"
+  },
+  {
+    "id": 52,
+    "name": "Giurgiu",
+    "search": "all"
+  },
+  {
+    "id": 59,
+    "name": "Ilfov",
+    "search": "all"
+  }
+]
