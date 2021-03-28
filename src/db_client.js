@@ -1,7 +1,8 @@
 const { MongoClient, Db, InsertOneWriteOpResult } = require("mongodb");
 const unload = require("unload");
 
-const credentials = require("./credentials.json");
+const { logMessage } = require("./logger.js");
+const credentials = require("../etc/credentials.json");
 
 const client = new MongoClient(credentials.uri, { useUnifiedTopology: true });
 
@@ -10,31 +11,40 @@ unload.add(() => {
   client.close();
 });
 
+let mongoClient = {};
+
 /**
  *
  * @param {string} dbName
  * @returns {Db} database
  */
-async function getDb(dbName) {
+mongoClient.getDb = async (dbName) => {
   if (!client.isConnected()) {
     await client.connect();
+    logMessage("INFO", "Connected to database", true);
   }
 
   return client.db(dbName);
-}
+};
 
 /**
  *
  * @param {Db} database
  * @param {string} collectionName
- * @param {any} record
- * @returns {InsertOneWriteOpResult} insert results
+ * @param {any} data
+ * @returns {any} insert results
  */
-async function insertIntoDb(database, collectionName, record) {
-  const result = await database.collection(collectionName).insertOne(record);
+mongoClient.insertIntoDb = async (database, collectionName, data) => {
+  let result = {};
+
+  if (Array.isArray(data)) {
+    result = await database.collection(collectionName).insertMany(data);
+  } else {
+    result = await database.collection(collectionName).insertOne(data);
+  }
 
   return result;
-}
+};
 
 /**
  *
@@ -43,17 +53,13 @@ async function insertIntoDb(database, collectionName, record) {
  * @param {any} filter
  * @returns {any} query result
  */
-async function listRecords(database, collectionName, filter = {}) {
+mongoClient.listRecords = async (database, collectionName, filter = {}) => {
   const result = await database
     .collection(collectionName)
     .find(filter)
     .toArray();
 
   return result;
-}
-
-module.exports = {
-  getDb,
-  insertIntoDb,
-  listRecords,
 };
+
+module.exports = mongoClient;
