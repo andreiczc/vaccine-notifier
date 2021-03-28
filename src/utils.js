@@ -11,7 +11,7 @@ const boosters = ["Pfizer", "Moderna", "Astra Zeneca"];
 
 let transporter = nodemailer.createTransport(credentials);
 
-transporter.verify((err, success) => {
+transporter.verify((err) => {
   if (err) {
     logMessage(
       "ERROR",
@@ -21,6 +21,15 @@ transporter.verify((err, success) => {
   }
 });
 
+/**
+ *
+ * @param {string} county
+ * @param {string} address
+ * @param {number} noAvailable
+ * @param {number} noWaiting
+ * @param {number} boosterType
+ * @returns
+ */
 function createMailInfoText(
   county,
   address,
@@ -42,7 +51,7 @@ function createMailInfoText(
 }
 
 async function sendMail(mailInfo) {
-  let info = await transporter.sendMail(mailInfo, (err, info) => {
+  let info = await transporter.sendMail(mailInfo, (err) => {
     if (err) {
       logMessage("ERROR", `Error sending message. ${err}`, true);
     }
