@@ -49,7 +49,7 @@ function processMessage(response, county) {
         item.waitingListSize < 100
       ) {
         logMessage(
-          "INFO",
+          "FOUND_PLACE",
           `Found ${item.waitingListSize} places on the waiting list for ${county.name} in ${item.address}`,
           true
         );
@@ -58,7 +58,7 @@ function processMessage(response, county) {
 
       if (item.availableSlots) {
         logMessage(
-          "INFO",
+          "FOUND_PLACE",
           `Found ${item.availableSlots} places available for ${county.name} in ${item.address}`,
           true
         );
