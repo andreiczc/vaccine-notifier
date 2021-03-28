@@ -1,10 +1,13 @@
+// eslint-disable-next-line no-unused-vars
 const { MongoClient, Db, InsertOneWriteOpResult } = require("mongodb");
 const unload = require("unload");
 
 const { logMessage } = require("./logger.js");
 const credentials = require("../etc/credentials.json");
 
-const client = new MongoClient(credentials.uri, { useUnifiedTopology: true });
+const client = new MongoClient(credentials.db.uri, {
+  useUnifiedTopology: true,
+});
 
 unload.add(() => {
   console.log("closing connection");
@@ -16,12 +19,12 @@ let mongoClient = {};
 /**
  *
  * @param {string} dbName
- * @returns {Db} database
+ * @returns {Db} db
  */
 mongoClient.getDb = async (dbName) => {
   if (!client.isConnected()) {
     await client.connect();
-    logMessage("INFO", "Connected to database", true);
+    logMessage("INFO", "Connected to database");
   }
 
   return client.db(dbName);
@@ -29,18 +32,18 @@ mongoClient.getDb = async (dbName) => {
 
 /**
  *
- * @param {Db} database
+ * @param {Db} db
  * @param {string} collectionName
  * @param {any} data
  * @returns {any} insert results
  */
-mongoClient.insertIntoDb = async (database, collectionName, data) => {
+mongoClient.insertIntoDb = async (db, collectionName, data) => {
   let result = {};
 
   if (Array.isArray(data)) {
-    result = await database.collection(collectionName).insertMany(data);
+    result = await db.collection(collectionName).insertMany(data);
   } else {
-    result = await database.collection(collectionName).insertOne(data);
+    result = await db.collection(collectionName).insertOne(data);
   }
 
   return result;
@@ -48,16 +51,13 @@ mongoClient.insertIntoDb = async (database, collectionName, data) => {
 
 /**
  *
- * @param {Db} database
+ * @param {Db} db
  * @param {string} collectionName
  * @param {any} filter
  * @returns {any} query result
  */
-mongoClient.listRecords = async (database, collectionName, filter = {}) => {
-  const result = await database
-    .collection(collectionName)
-    .find(filter)
-    .toArray();
+mongoClient.listRecords = async (db, collectionName, filter = {}) => {
+  const result = await db.collection(collectionName).find(filter).toArray();
 
   return result;
 };

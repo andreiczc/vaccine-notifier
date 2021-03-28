@@ -1,12 +1,9 @@
 const mailUtils = require("./mail_utils.js");
 
 const fs = require("fs");
-let logFile = fs.createWriteStream(
-  "C:/School/etc/developing/vax-notifier/debug.log",
-  {
-    flags: "a",
-  }
-);
+let logFile = fs.createWriteStream("C:/School/etc/vax-notifier/debug.log", {
+  flags: "a",
+});
 
 function formatLogMessage(messageType, message) {
   const date = new Date();
@@ -41,7 +38,7 @@ function logMessage(
     mailUtils.sendMail({
       from: "noreply.projectjava@gmail.com",
       to: "andrei.r.cazacu@gmail.com, deeliam89@gmail.com",
-      subject: "Eroare in sitemul de notficare pentru vaccin",
+      subject: "Eroare in sistemul de notficare pentru vaccin",
       text: formattedString,
     });
   }

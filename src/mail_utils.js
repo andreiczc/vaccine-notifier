@@ -28,7 +28,7 @@ mailUtils.createMailInfo = (countyName, arrayInfo) => {
     }`
   );
 
-  mailInfo.subject(`Raport locuri vaccinare pentru ${countyName}`);
+  mailInfo.subject = `Raport locuri vaccinare pentru ${countyName}`;
   mailInfo.text = "";
 
   arrayInfo.forEach((item) => {

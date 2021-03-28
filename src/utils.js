@@ -1,32 +1,27 @@
 const axios = require("axios");
 
-const credentials = require("../etc/credentials.json");
-const counties = require("../etc/counties.json");
+let request = require("../etc/request.json");
 
 const { logMessage } = require("./logger.js");
 const mongoClient = require("./db_client.js");
 const mailUtils = require("./mail_utils.js");
 const { createMailInfo } = require("./mail_utils.js");
 
-const boosters = ["Pfizer", "Moderna", "Astra Zeneca"];
-
 /**
  *
  * @param {number} countyId
  */
 async function processCounty(county) {
+  let lastPage = false;
   let pageNo = 0;
-  while (true) {
-    const response = await performRequest(county, pageNo);
 
-    const content = response.content;
-    mongoClient.insertIntoDb("test", "test", content);
+  while (!lastPage) {
+    const response = await performRequest(county, pageNo++);
+    const responseData = response.data;
 
-    if (processMessage(response, county)) {
-      break;
-    }
-
-    ++pageNo;
+    const myDb = await mongoClient.getDb("vax-notifier");
+    await mongoClient.insertIntoDb(myDb, county.name, responseData.content);
+    lastPage = processMessage(responseData, county);
   }
 }
 
@@ -51,7 +46,7 @@ function processMessage(response, county) {
       if (
         county.search === "all" &&
         item.usesWaitingList &&
-        item.waitingListSize < 20
+        item.waitingListSize < 100
       ) {
         logMessage(
           "INFO",
@@ -64,7 +59,7 @@ function processMessage(response, county) {
       if (item.availableSlots) {
         logMessage(
           "INFO",
-          `Found ${item.availableSlots} places available list for ${county.name}`,
+          `Found ${item.availableSlots} places available for ${county.name} in ${item.address}`,
           true
         );
         shouldAdd = true;
@@ -72,7 +67,7 @@ function processMessage(response, county) {
 
       if (shouldAdd) {
         mailMessageArray.push({
-          county: item.countyName,
+          county: county.name,
           address: item.address,
           boosterType: item.boosterID,
           noAvailable: item.availableSlots,
@@ -97,30 +92,10 @@ async function performRequest(county, pageNo) {
     `Performing a request for ${county.name} with page number ${pageNo}`
   );
 
-  const result = await axios({
-    method: "post",
-    url: "http://localhost:3000/test",
-    params: {
-      page: pageNo,
-    },
-    headers: {
-      Cookie: "SESSION=NzY5ZDE4ZTItNjA1My00YTIxLWE5NjItMzYyZGM5YTFiNjFm",
-      "sec-ch-ua": `"Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"`,
-      Accept: `application/json, text/plain, */*`,
-      DNT: 1,
-      "sec-ch-ua-mobile": "?0",
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
-      "Content-Type": "application/json",
-    },
-    data: {
-      countyID: county.id,
-      identificationCode: "1990503460060",
-      masterPersonnelCategoryID: -4,
-      personnelCategoryID: 32,
-      recipientID: 5728863,
-    },
-  });
+  request.params.page = pageNo;
+  request.data.countyID = county.id;
+
+  const result = await axios(request);
 
   return result;
 }
