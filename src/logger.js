@@ -1,7 +1,10 @@
 const mailUtils = require("./mail_utils.js");
 
 const fs = require("fs");
-let logFile = fs.createWriteStream("C:/School/etc/vax-notifier/debug.log", {
+const path = require("path");
+
+const logDirectory = __dirname.substr(0, __dirname.lastIndexOf(path.sep));
+let logFile = fs.createWriteStream(`${logDirectory}${path.sep}debug.log`, {
   flags: "a",
 });
 
