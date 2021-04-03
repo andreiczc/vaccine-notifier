@@ -17,6 +17,7 @@ const getSession = async () => {
     const browser = await puppeteer.launch();
 
     const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);
     await page.goto(
       "https://programare.vaccinare-covid.gov.ro/auth/login/by-email",
       {
@@ -37,7 +38,7 @@ const getSession = async () => {
 
     return `${sessionCookie.name}=${sessionCookie.value}`;
   } catch (err) {
-    logMessage("ERROR", "Error getting session token");
+    logMessage("ERROR", `Error getting session token.\n${JSON.stringify(err)}`);
 
     return "";
   }
