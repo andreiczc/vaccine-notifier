@@ -59,6 +59,10 @@ initSession();
 
 webClient.performRequest = async (county, pageNo) => {
   try {
+    if (!isClientReady) {
+      return null;
+    }
+
     logMessage(
       "INFO",
       `Performing a request for ${county.name} with page number ${pageNo}`
@@ -69,7 +73,7 @@ webClient.performRequest = async (county, pageNo) => {
 
     const result = await axios(request);
 
-    if (result.data.contains("<!doctype html>")) {
+    if (typeof result.data === "string") {
       throw Error("Session not ready");
     }
 

@@ -3,6 +3,8 @@ const mongoClient = require("./db_client");
 const mailUtils = require("./mail_utils");
 const webClient = require("./web_client");
 
+let lastInsertTime = {};
+
 /**
  *
  * @param {number} countyId
@@ -18,11 +20,29 @@ async function processCounty(county) {
     }
 
     const responseData = response.data;
-
-    const myDb = await mongoClient.getDb("vax-notifier");
-    await mongoClient.insertIntoDb(myDb, county.name, responseData.content);
     lastPage = processMessage(responseData, county);
+
+    await persistRecords(county, responseData.content);
   }
+}
+
+/**
+ *
+ * @param {string} county
+ * @param {Array} records
+ */
+async function persistRecords(county, records) {
+  const currTimeMs = Date.now();
+
+  if (lastInsertTime[county.name]) {
+    if (currTimeMs - lastInsertTime[county.name] < 15 * 60000) {
+      return;
+    }
+  }
+
+  const myDb = await mongoClient.getDb("vax-notifier");
+  await mongoClient.insertIntoDb(myDb, county.name, records);
+  lastInsertTime[county.name] = currTimeMs;
 }
 
 /**
@@ -50,8 +70,7 @@ function processMessage(response, county) {
       ) {
         logMessage(
           "FOUND_PLACE",
-          `Found ${item.waitingListSize} places on the waiting list for ${county.name} in ${item.address}`,
-          true
+          `Found ${item.waitingListSize} places on the waiting list for ${county.name} in ${item.address}`
         );
         shouldAdd = true;
       }
@@ -59,8 +78,7 @@ function processMessage(response, county) {
       if (item.availableSlots) {
         logMessage(
           "FOUND_PLACE",
-          `Found ${item.availableSlots} places available for ${county.name} in ${item.address}`,
-          true
+          `Found ${item.availableSlots} places available for ${county.name} in ${item.address}`
         );
         shouldAdd = true;
       }

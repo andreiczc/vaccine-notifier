@@ -22,7 +22,10 @@ const connectToDb = async () => {
     await client.connect();
     logMessage("INFO", "Connected to database");
   } catch (err) {
-    logMessage("ERROR", `Error connecting to DB client.\n${err}`);
+    logMessage(
+      "ERROR",
+      `Error connecting to DB client.\n${JSON.stringify(err)}`
+    );
   }
 };
 
@@ -58,7 +61,10 @@ mongoClient.insertIntoDb = async (db, collectionName, data) => {
 
     return result;
   } catch (err) {
-    logMessage("ERROR", `Error inserting records into db.\n${err}`);
+    logMessage(
+      "ERROR",
+      `Error inserting records into db.\n${JSON.stringify(JSON.stringify(err))}`
+    );
 
     return null;
   }
@@ -77,7 +83,7 @@ mongoClient.listRecords = async (db, collectionName, filter = {}) => {
 
     return result;
   } catch (err) {
-    logMessage("ERROR", `Error retrieving records.\n${err}`);
+    logMessage("ERROR", `Error retrieving records.\n${JSON.stringify(err)}`);
   }
 };
 

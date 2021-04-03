@@ -4,7 +4,7 @@ const counties = require("../resources/counties.json");
 let { processCounty } = require("./utils.js");
 
 async function logicLoop() {
-  counties.forEach(async function (item) {
+  counties.forEach(async (item) => {
     if (item.search !== "none") {
       await processCounty(item);
     }
@@ -19,5 +19,8 @@ async function main() {
 }
 
 main().catch((error) =>
-  logMessage("ERROR", `Error escaped from main! Message: ${error}`, true, true)
+  logMessage(
+    "ERROR",
+    `Error escaped from main! Message: ${JSON.stringify(error)}`
+  )
 );
