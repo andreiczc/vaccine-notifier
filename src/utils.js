@@ -1,11 +1,7 @@
-const axios = require("axios");
-
-let request = require("../etc/request.json");
-
-const { logMessage } = require("./logger.js");
-const mongoClient = require("./db_client.js");
-const mailUtils = require("./mail_utils.js");
-const { createMailInfo } = require("./mail_utils.js");
+const { logMessage } = require("./logger");
+const mongoClient = require("./db_client");
+const mailUtils = require("./mail_utils");
+const webClient = require("./web_client");
 
 /**
  *
@@ -16,7 +12,7 @@ async function processCounty(county) {
   let pageNo = 0;
 
   while (!lastPage) {
-    const response = await performRequest(county, pageNo++);
+    const response = await webClient.performRequest(county, pageNo++);
     const responseData = response.data;
 
     const myDb = await mongoClient.getDb("vax-notifier");
@@ -79,25 +75,11 @@ function processMessage(response, county) {
 
   if (mailMessageArray.length !== 0) {
     logMessage("INFO", "Sending a mail");
-    const mailInfo = createMailInfo(county.name, mailMessageArray);
+    const mailInfo = mailUtils.createMailInfo(county.name, mailMessageArray);
     mailUtils.sendMail(mailInfo);
   }
 
   return response.last;
-}
-
-async function performRequest(county, pageNo) {
-  logMessage(
-    "INFO",
-    `Performing a request for ${county.name} with page number ${pageNo}`
-  );
-
-  request.params.page = pageNo;
-  request.data.countyID = county.id;
-
-  const result = await axios(request);
-
-  return result;
 }
 
 module.exports = { processCounty };

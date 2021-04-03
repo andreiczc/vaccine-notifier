@@ -1,6 +1,6 @@
 const { logMessage } = require("./logger.js");
 
-const counties = require("../etc/counties.json");
+const counties = require("../resources/counties.json");
 let { processCounty } = require("./utils.js");
 
 async function logicLoop() {

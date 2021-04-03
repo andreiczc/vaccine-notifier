@@ -1,20 +1,30 @@
 // eslint-disable-next-line no-unused-vars
-const { MongoClient, Db, InsertOneWriteOpResult } = require("mongodb");
+const credentials = require("../resources/credentials.json").db;
+
+const { logMessage } = require("./logger");
+
+const { MongoClient } = require("mongodb");
 const unload = require("unload");
 
-const { logMessage } = require("./logger.js");
-const credentials = require("../etc/credentials.json");
-
-const client = new MongoClient(credentials.db.uri, {
+const client = new MongoClient(credentials.uri, {
   useUnifiedTopology: true,
 });
 
 unload.add(() => {
-  console.log("closing connection");
+  logMessage("INFO", "DB connection closed");
   client.close();
 });
 
 let mongoClient = {};
+
+const connectToDb = async () => {
+  try {
+    await client.connect();
+    logMessage("INFO", "Connected to database");
+  } catch (err) {
+    logMessage("ERROR", `Error connecting to DB client.\n${err}`);
+  }
+};
 
 /**
  *
@@ -23,8 +33,7 @@ let mongoClient = {};
  */
 mongoClient.getDb = async (dbName) => {
   if (!client.isConnected()) {
-    await client.connect();
-    logMessage("INFO", "Connected to database");
+    await connectToDb();
   }
 
   return client.db(dbName);
@@ -38,15 +47,21 @@ mongoClient.getDb = async (dbName) => {
  * @returns {any} insert results
  */
 mongoClient.insertIntoDb = async (db, collectionName, data) => {
-  let result = {};
+  try {
+    let result = {};
 
-  if (Array.isArray(data)) {
-    result = await db.collection(collectionName).insertMany(data);
-  } else {
-    result = await db.collection(collectionName).insertOne(data);
+    if (Array.isArray(data)) {
+      result = await db.collection(collectionName).insertMany(data);
+    } else {
+      result = await db.collection(collectionName).insertOne(data);
+    }
+
+    return result;
+  } catch (err) {
+    logMessage("ERROR", `Error inserting records into db.\n${err}`);
+
+    return null;
   }
-
-  return result;
 };
 
 /**
@@ -57,9 +72,13 @@ mongoClient.insertIntoDb = async (db, collectionName, data) => {
  * @returns {any} query result
  */
 mongoClient.listRecords = async (db, collectionName, filter = {}) => {
-  const result = await db.collection(collectionName).find(filter).toArray();
+  try {
+    const result = await db.collection(collectionName).find(filter).toArray();
 
-  return result;
+    return result;
+  } catch (err) {
+    logMessage("ERROR", `Error retrieving records.\n${err}`);
+  }
 };
 
 module.exports = mongoClient;

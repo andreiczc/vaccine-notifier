@@ -1,7 +1,9 @@
-const mailUtils = require("./mail_utils.js");
+const mailUtils = require("./mail_utils");
 
 const fs = require("fs");
 const path = require("path");
+
+const specialTags = ["FOUND_PLACE", "ERROR", "SUCCESS"];
 
 const logDirectory = __dirname.substr(0, __dirname.lastIndexOf(path.sep));
 let logFile = fs.createWriteStream(`${logDirectory}${path.sep}debug.log`, {
@@ -23,21 +25,13 @@ function formatLogMessage(messageType, message) {
  * @param {boolean} outputToConsole
  * @param {boolean} notifyMail
  */
-function logMessage(
-  messageType,
-  message,
-  outputToConsole = false,
-  notifyMail = false
-) {
+function logMessage(messageType, message) {
   const formattedString = formatLogMessage(messageType, message);
 
   logFile.write(formattedString);
 
-  if (outputToConsole) {
+  if (specialTags.includes(messageType)) {
     console.log(formattedString);
-  }
-
-  if (notifyMail) {
     mailUtils.sendMail({
       from: "noreply.projectjava@gmail.com",
       to: "andrei.r.cazacu@gmail.com, deeliam89@gmail.com",
