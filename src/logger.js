@@ -13,19 +13,25 @@ const logDirectory =
 let logFile = null;
 
 function checkLogFile() {
-  const files = fs.readdirSync(logDirectory);
-  const lastFile = files[files.length - 1];
-  const lastFileSize = fs.statSync(lastFile).size;
+  try {
+    fs.accessSync(logDirectory);
+    const files = fs.readdirSync(logDirectory);
+    const lastFile = files[files.length - 1];
+    const lastFileSize = fs.statSync(lastFile).size;
 
-  if (lastFileSize > 20 * BYTES_PER_MB) {
-    const sequenceNumber = lastFile.substring(
-      "debug".length,
-      lastFile.indexOf(".log")
-    );
+    if (lastFileSize > 20 * BYTES_PER_MB) {
+      const sequenceNumber = lastFile.substring(
+        "debug".length,
+        lastFile.indexOf(".log")
+      );
 
-    logFile = fs.createWriteStream(
-      `${logDirectory}debug${parseInt(sequenceNumber) + 1}.log`
-    );
+      logFile = fs.createWriteStream(
+        `${logDirectory}debug${parseInt(sequenceNumber) + 1}.log`,
+        { flags: "a" }
+      );
+    }
+  } catch (err) {
+    logFile = fs.createWriteStream(`${logDirectory}debug1.log`, { flags: "a" });
   }
 }
 
