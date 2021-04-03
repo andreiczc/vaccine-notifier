@@ -43,6 +43,8 @@ async function persistRecords(county, records) {
   const myDb = await mongoClient.getDb("vax-notifier");
   await mongoClient.insertIntoDb(myDb, county.name, records);
   lastInsertTime[county.name] = currTimeMs;
+
+  logMessage("INFO", `Data for ${county.name} has been persisted in db.`);
 }
 
 /**
