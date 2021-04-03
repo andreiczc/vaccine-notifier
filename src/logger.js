@@ -17,7 +17,7 @@ function checkLogFile() {
     fs.accessSync(logDirectory);
     const files = fs.readdirSync(logDirectory);
     const lastFile = files[files.length - 1];
-    const lastFileSize = fs.statSync(lastFile).size;
+    const lastFileSize = fs.statSync(`${logDirectory}${lastFile}`).size;
 
     if (lastFileSize > 20 * BYTES_PER_MB) {
       const sequenceNumber = lastFile.substring(
