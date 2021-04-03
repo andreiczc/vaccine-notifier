@@ -31,6 +31,7 @@ function checkLogFile() {
       );
     }
   } catch (err) {
+    fs.mkdirSync(logDirectory);
     logFile = fs.createWriteStream(`${logDirectory}debug1.log`, { flags: "a" });
   }
 }
