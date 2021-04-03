@@ -10,7 +10,7 @@ const Mutex = require("async-mutex").Mutex;
 const mutex = new Mutex();
 let webClient = {};
 
-let badSession = true;
+let isClientReady = false;
 
 const getSession = async () => {
   try {
@@ -43,22 +43,22 @@ const getSession = async () => {
   }
 };
 
-const sanitizeSession = async () => {
+const initSession = async () => {
   await mutex.runExclusive(async () => {
-    if (badSession) {
+    if (!isClientReady) {
       request.headers.Cookie = request.headers.Cookie = await getSession();
       if (request.headers.Cookie !== "") {
-        badSession = false;
+        isClientReady = true;
         logMessage("SUCCESS", "Session reacquired");
       }
     }
   });
 };
 
+initSession();
+
 webClient.performRequest = async (county, pageNo) => {
   try {
-    await sanitizeSession();
-
     logMessage(
       "INFO",
       `Performing a request for ${county.name} with page number ${pageNo}`
@@ -70,18 +70,17 @@ webClient.performRequest = async (county, pageNo) => {
     const result = await axios(request);
 
     if (result.data.contains("<!doctype html>")) {
-      throw Error("Result returned is most likely incorrect.");
+      throw Error("Session not ready");
     }
 
     return result;
   } catch (err) {
-    badSession = true;
+    isClientReady = false;
+    await initSession();
 
     logMessage(
       "ERROR",
-      `Error performing request. Setting bad session to true\n${JSON.stringify(
-        err
-      )}`
+      `Error performing request. Client not ready\n${JSON.stringify(err)}`
     );
 
     return null;

@@ -14,7 +14,7 @@ async function processCounty(county) {
   while (!lastPage) {
     const response = await webClient.performRequest(county, pageNo++);
     if (!response) {
-      continue;
+      break;
     }
 
     const responseData = response.data;
