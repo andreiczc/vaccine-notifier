@@ -13,6 +13,10 @@ async function processCounty(county) {
 
   while (!lastPage) {
     const response = await webClient.performRequest(county, pageNo++);
+    if (!response) {
+      continue;
+    }
+
     const responseData = response.data;
 
     const myDb = await mongoClient.getDb("vax-notifier");

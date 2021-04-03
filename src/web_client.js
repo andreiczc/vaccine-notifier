@@ -5,8 +5,12 @@ const { logMessage } = require("./logger");
 
 const puppeteer = require("puppeteer");
 const axios = require("axios");
+const Mutex = require("async-mutex").Mutex;
 
+const mutex = new Mutex();
 let webClient = {};
+
+let badSession = true;
 
 const getSession = async () => {
   try {
@@ -39,8 +43,22 @@ const getSession = async () => {
   }
 };
 
+const sanitizeSession = async () => {
+  await mutex.runExclusive(async () => {
+    if (badSession) {
+      request.headers.Cookie = request.headers.Cookie = await getSession();
+      if (request.headers.Cookie !== "") {
+        badSession = false;
+        logMessage("SUCCESS", "Session reacquired");
+      }
+    }
+  });
+};
+
 webClient.performRequest = async (county, pageNo) => {
   try {
+    await sanitizeSession();
+
     logMessage(
       "INFO",
       `Performing a request for ${county.name} with page number ${pageNo}`
@@ -51,17 +69,22 @@ webClient.performRequest = async (county, pageNo) => {
 
     const result = await axios(request);
 
+    if (result.data.contains("<!doctype html>")) {
+      throw Error("Result returned is most likely incorrect.");
+    }
+
     return result;
   } catch (err) {
+    badSession = true;
+
     logMessage(
       "ERROR",
-      `Error performing request. Will now retry acquiring session\n${err}`
+      `Error performing request. Setting bad session to true\n${JSON.stringify(
+        err
+      )}`
     );
 
-    request.headers.Cookie = await getSession();
-    if (request.headers.Cookie !== "") {
-      logMessage("SUCCESS", "Session reacquired");
-    }
+    return null;
   }
 };
 
