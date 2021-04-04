@@ -25,11 +25,18 @@ function checkLogFile() {
         lastFile.indexOf(".log")
       );
 
+      if (logFile) logFile.close();
+
       logFile = fs.createWriteStream(
         `${logDirectory}debug${parseInt(sequenceNumber) + 1}.log`,
         { flags: "a" }
       );
     }
+
+    if (!logFile)
+      logFile = fs.createWriteStream(`${logDirectory}debug1.log`, {
+        flags: "a",
+      });
   } catch (err) {
     fs.mkdirSync(logDirectory);
     logFile = fs.createWriteStream(`${logDirectory}debug1.log`, { flags: "a" });
