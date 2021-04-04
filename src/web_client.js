@@ -17,7 +17,6 @@ const getSession = async () => {
     const browser = await puppeteer.launch();
 
     const page = await browser.newPage();
-    await page.setDefaultNavigationTimeout(0);
     await page.goto(
       "https://programare.vaccinare-covid.gov.ro/auth/login/by-email",
       {
@@ -32,7 +31,7 @@ const getSession = async () => {
 
     const cookies = await page.cookies();
 
-    setTimeout(async () => await browser.close(), 60000);
+    setTimeout(async () => await browser.close(), 15000);
 
     const sessionCookie = cookies.find((element) => element.name === "SESSION");
 
