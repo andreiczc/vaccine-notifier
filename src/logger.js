@@ -12,10 +12,31 @@ const logDirectory =
 
 let logFile = null;
 
+function fileExists(path) {
+  try {
+    fs.accessSync(path);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
 function checkLogFile() {
   try {
-    fs.accessSync(logDirectory);
+    if (!fileExists(logDirectory)) {
+      fs.mkdirSync(logDirectory);
+    }
+
     const files = fs.readdirSync(logDirectory);
+
+    if (files.length == 0) {
+      logFile = fs.createWriteStream(`${logDirectory}debug1.log`, {
+        flags: "a",
+      });
+
+      return;
+    }
+
     const lastFile = files[files.length - 1];
     const lastFileSize = fs.statSync(`${logDirectory}${lastFile}`).size;
 
@@ -31,15 +52,13 @@ function checkLogFile() {
         `${logDirectory}debug${parseInt(sequenceNumber) + 1}.log`,
         { flags: "a" }
       );
-    }
-
-    if (!logFile)
-      logFile = fs.createWriteStream(`${logDirectory}debug1.log`, {
+    } else if (!logFile) {
+      logFile = fs.createWriteStream(`${logDirectory}${lastFile}`, {
         flags: "a",
       });
+    }
   } catch (err) {
-    fs.mkdirSync(logDirectory);
-    logFile = fs.createWriteStream(`${logDirectory}debug1.log`, { flags: "a" });
+    console.log(`Error creating logger.\n${err}`);
   }
 }
 
