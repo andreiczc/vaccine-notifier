@@ -10,7 +10,9 @@ let transporter = nodemailer.createTransport(loginInfo);
 transporter.verify((err) => {
   if (err) {
     console.log(
-      "Error in the mailing layer. Will now proceed in killing the process"
+      `Error in the mailing layer. Will now proceed in killing the process.\n${JSON.stringify(
+        err
+      )}`
     );
 
     process.exit(-1);
@@ -48,7 +50,9 @@ mailUtils.sendMail = (mailInfo) => {
   transporter.sendMail(mailInfo, (err) => {
     if (err) {
       console.log(
-        `Error while sending mail. Will kill the process.\nMail info: ${mailInfo}`
+        `Error while sending mail. Will kill the process.\nMail info: ${JSON.stringify(
+          mailInfo
+        )}\nError: ${JSON.stringify(err)}`
       );
 
       process.exit();
