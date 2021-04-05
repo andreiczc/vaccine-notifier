@@ -3,9 +3,13 @@ let request = require("../resources/request.json");
 
 const { logMessage } = require("./logger");
 
-const puppeteer = require("puppeteer");
 const axios = require("axios");
+
 const Mutex = require("async-mutex").Mutex;
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+
+const puppeteer = require("puppeteer-extra");
+puppeteer.use(StealthPlugin());
 
 const mutex = new Mutex();
 let webClient = {};
