@@ -26,7 +26,11 @@ const getSession = async () => {
 
     await page.type("#mat-input-0", loginInfo.username);
     await page.type("#mat-input-1", loginInfo.password);
+
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: "networkidle0" }),
       page.click(".submit-button"),
+    ]);
 
     const cookies = await page.cookies();
 
