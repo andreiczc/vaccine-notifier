@@ -4,28 +4,27 @@ let request = require("../resources/request.json");
 const { logMessage } = require("./logger");
 
 const axios = require("axios");
+const puppeteer = require("puppeteer");
 
 const Mutex = require("async-mutex").Mutex;
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-
-const puppeteer = require("puppeteer-extra");
-puppeteer.use(StealthPlugin());
 
 const mutex = new Mutex();
 let webClient = {};
-
 let isClientReady = false;
 
 const getSession = async () => {
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.connect({
+      browserWSEndpoint: loginInfo.wsEndpoint,
+      defaultViewport: null,
+      slowMo: Math.floor(Math.random() * 75 + 25),
+    });
 
     const page = await browser.newPage();
+
     await page.goto(
       "https://programare.vaccinare-covid.gov.ro/auth/login/by-email",
-      {
-        waitUntil: "networkidle0",
-      }
+      { waitUntil: "networkidle0" }
     );
 
     await page.type("#mat-input-0", loginInfo.username);
@@ -33,12 +32,10 @@ const getSession = async () => {
 
     await Promise.all([
       page.waitForNavigation({ waitUntil: "networkidle0" }),
-      page.click(".submit-button"),
+      page.keyboard.press("Enter"),
     ]);
 
     const cookies = await page.cookies();
-
-    setTimeout(async () => await browser.close(), 15000);
 
     const sessionCookie = cookies.find((element) => element.name === "SESSION");
 
@@ -53,7 +50,7 @@ const getSession = async () => {
 const initSession = async () => {
   await mutex.runExclusive(async () => {
     if (!isClientReady) {
-      request.headers.Cookie = request.headers.Cookie = await getSession();
+      request.headers.Cookie = await getSession();
       if (request.headers.Cookie !== "") {
         isClientReady = true;
         logMessage("SUCCESS", "Session reacquired");
@@ -87,7 +84,8 @@ webClient.performRequest = async (county, pageNo) => {
     return result;
   } catch (err) {
     isClientReady = false;
-    await initSession();
+
+    if (!err.message.includes("status code 500")) await initSession();
 
     logMessage(
       "ERROR",

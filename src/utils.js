@@ -68,7 +68,7 @@ function processMessage(response, county) {
       if (
         county.search === "all" &&
         item.usesWaitingList &&
-        item.waitingListSize < 100
+        item.waitingListSize < 500
       ) {
         logMessage(
           "FOUND_PLACE",

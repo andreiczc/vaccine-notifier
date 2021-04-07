@@ -3,7 +3,7 @@ const mailUtils = require("./mail_utils");
 const fs = require("fs");
 const path = require("path");
 
-const specialTags = ["FOUND_PLACE", "ERROR", "SUCCESS"];
+const specialTags = ["ERROR", "SUCCESS"];
 const BYTES_PER_MB = 1024 ** 2;
 
 const logDirectory =
