@@ -90,7 +90,7 @@ function logMessage(messageType, message) {
     mailUtils.sendMail({
       from: "noreply.projectjava@gmail.com",
       to: "andrei.r.cazacu@gmail.com, deeliam89@gmail.com",
-      subject: "Eroare in sistemul de notficare pentru vaccin",
+      subject: "Notificare despre sistemul de monitorizare pentru vaccinari",
       text: formattedString,
     });
   }
