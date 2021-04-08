@@ -83,7 +83,10 @@ webClient.performRequest = async (county, pageNo) => {
 
     return result;
   } catch (err) {
-    if (!err.message.includes("status code 500")) {
+    if (
+      !err.message.includes("status code 500") &&
+      !err.message.includes("status code 429")
+    ) {
       isClientReady = false;
       await initSession();
     }

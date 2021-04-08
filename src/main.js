@@ -10,12 +10,12 @@ async function logicLoop() {
     }
   });
 
-  console.log("Sleeping 15 secs");
+  console.log("Sleeping 300 secs");
 }
 
 async function main() {
   console.log("Starting main");
-  setInterval(logicLoop, 15000);
+  setInterval(logicLoop, 300000);
 }
 
 main().catch((error) =>
