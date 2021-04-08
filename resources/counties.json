@@ -12,12 +12,12 @@
   {
     "id": 3,
     "name": "Arges",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 4,
     "name": "Bacau",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 5,
@@ -37,17 +37,17 @@
   {
     "id": 8,
     "name": "Brasov",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 9,
     "name": "Braila",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 10,
     "name": "Buzau",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 11,
@@ -62,7 +62,7 @@
   {
     "id": 13,
     "name": "Constanta",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 14,
@@ -72,17 +72,17 @@
   {
     "id": 15,
     "name": "Dimbovita",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 16,
     "name": "Dolj",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 17,
     "name": "Galati",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 18,
@@ -102,7 +102,7 @@
   {
     "id": 21,
     "name": "Ialomita",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 22,
@@ -127,12 +127,12 @@
   {
     "id": 28,
     "name": "Olt",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 29,
     "name": "Prahova",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 30,
@@ -147,7 +147,7 @@
   {
     "id": 32,
     "name": "Sibiu",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 33,
@@ -157,7 +157,7 @@
   {
     "id": 34,
     "name": "Teleorman",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 35,
@@ -167,7 +167,7 @@
   {
     "id": 36,
     "name": "Tulcea",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 37,
@@ -177,12 +177,12 @@
   {
     "id": 38,
     "name": "Valcea",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 39,
     "name": "Vrancea",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 40,
@@ -192,12 +192,12 @@
   {
     "id": 51,
     "name": "Calarasi",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 52,
     "name": "Giurgiu",
-    "search": "available"
+    "search": "none"
   },
   {
     "id": 59,
