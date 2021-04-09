@@ -64,7 +64,7 @@ function processMessage(response, county) {
 
     let shouldAdd = false;
 
-    if (item.boosterID < 3) {
+    if (item.boosterID === 1) {
       if (
         county.search === "all" &&
         item.usesWaitingList &&
