@@ -11,6 +11,7 @@ const Mutex = require("async-mutex").Mutex;
 const mutex = new Mutex();
 let webClient = {};
 let isClientReady = false;
+let maxNumOfTries = 3;
 
 const getSession = async () => {
   try {
@@ -53,6 +54,7 @@ const initSession = async () => {
       request.headers.Cookie = await getSession();
       if (request.headers.Cookie !== "") {
         isClientReady = true;
+        maxNumOfTries = 3;
         logMessage("SUCCESS", "Session reacquired");
       }
     }
@@ -78,23 +80,27 @@ webClient.performRequest = async (county, pageNo) => {
     const result = await axios(request);
 
     if (typeof result.data === "string") {
-      throw Error("Session not ready");
+      throw Error("Exception thrown by me");
     }
 
     return result;
   } catch (err) {
-    if (
-      !err.message.includes("status code 500") &&
-      !err.message.includes("status code 429")
-    ) {
+    if (err.message.includes("Exception thrown by me")) {
       isClientReady = false;
-      await initSession();
+
+      if (maxNumOfTries) {
+        --maxNumOfTries;
+        await initSession();
+      } else {
+        logMessage(
+          "ERROR",
+          "Exiting program since max number of tries has been reached"
+        );
+        process.exit(-1);
+      }
     }
 
-    logMessage(
-      "ERROR",
-      `Error performing request. Client not ready\n${JSON.stringify(err)}`
-    );
+    logMessage("ERROR", `Error performing request.\n${JSON.stringify(err)}`);
 
     return null;
   }
