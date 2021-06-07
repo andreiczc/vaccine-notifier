@@ -88,8 +88,8 @@ function logMessage(messageType, message) {
   if (specialTags.includes(messageType)) {
     console.log(formattedString);
     mailUtils.sendMail({
-      from: "noreply.projectjava@gmail.com",
-      to: "andrei.r.cazacu@gmail.com, deeliam89@gmail.com",
+      from: "TBA",
+      to: "TBA",
       subject: "Notificare despre sistemul de monitorizare pentru vaccinari",
       text: formattedString,
     });
